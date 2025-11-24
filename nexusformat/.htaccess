@@ -1,0 +1,24 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+# Turn off MultiViews
+Options -MultiViews
+
+AddType application/rdf+xml .owl
+
+### Rewrite rules
+
+# Rewrite rule to serve HTML content from the vocabulary URI if requested
+RewriteCond %{HTTP_ACCEPT} !application/rdf\+xml.*(text/html|application/xhtml\+xml|text/\*|\*/\*)
+RewriteCond %{HTTP_ACCEPT} text/html [OR]
+RewriteCond %{HTTP_ACCEPT} application/xhtml\+xml
+RewriteCond %{HTTP_USER_AGENT} ^Mozilla/.*
+RewriteRule ^$ https://manual.nexusformat.org/classes/index.html [R=303,NE,L]
+
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml
+RewriteRule ^(.+) https://raw.githubusercontent.com/nexusformat/NeXusOntology/refs/heads/main/ontology/NeXusOntology.owl [R=302,NE,L]
+
+# Default response
+# ---------------------------
+# Rewrite rule to serve the RDF/XML content from the vocabulary URI by default
+RewriteRule ^$ https://raw.githubusercontent.com/nexusformat/NeXusOntology/refs/heads/main/ontology/NeXusOntology.owl [R=303,L]
